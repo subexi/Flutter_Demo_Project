@@ -1,152 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'signup.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: MyHomePage(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          toolbarHeight: 100,
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+          elevation: 20, // Shadow depth
+          shadowColor: Colors.yellow,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+        ),
+        fontFamily: 'Georgia',
+        textTheme: const TextTheme(
+          headlineMedium: TextStyle(
+            fontSize: 36.0,
+            fontStyle:  FontStyle.italic, 
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.yellow,
+          foregroundColor: Colors.black,
+        ),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-  });
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey<FormState> _signInKey  = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final RegExp emailValid = RegExp(
-    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
-  );
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _signInKey,
+      appBar: AppBar(
+        title: const Text('Counter App'),
+      ),
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const FaIcon( FontAwesomeIcons.twitter,
-              color: Colors.blue,
-              size: 70,
-            ),
-            const SizedBox(height: 20),
-            const Text('Log in to Twitter', 
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
-            ),
-            Container(
-              margin: const EdgeInsets.fromLTRB(15, 30, 15, 0),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: TextFormField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter an Email',
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 20,
-                  ),
-                ),
-                validator: (value) {
-                  if(value == null || value.isEmpty){
-                    return 'Please enter an email';
-                  // Regular expression for basic email validation
-                  } else if(!emailValid.hasMatch(value)){
-                  return 'Please enter a valid email';
-                  } //
-                  return null;
-                }, // validator
-              ), // email
-            ), // Container
-            Container(
-              margin: const EdgeInsets.all(15),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: TextFormField(
-                obscureText: true,
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  hintText: 'Enter a Password',
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 20,
-                  ), // contentPadding
-                ), // InputDecoration
-                validator: (value) {
-                  if(value == null || value.isEmpty){
-                    return 'Please enter a password';
-                  }
-                  if(value.length < 6){
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                }, // validator
-              ), // TextFormField
-            ), // Container
-            Container(
-              width: 250,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: TextButton(
-                onPressed: () {
-                  if(_signInKey.currentState!.validate()){
-                    debugPrint('Email: ${_emailController.text}');
-                    debugPrint('Password: ${_passwordController.text}');
-                  } else {
-                    debugPrint('Form is invalid');
-                  }
-                }, // onPressed
-                child: const Text(
-                  'Log In', 
-                  style: TextStyle(
-                    color: Colors.white, 
-                    fontSize: 18
-                  ),
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => SignUp()));
-                debugPrint('Navigate to Sign Up screen');
-              }, // onPressed
-              child: Text("Don't have an account? Sign up",
-                style: TextStyle(
-                  color: Colors.blue.shade700,
-                  fontSize: 16,
-                ),
-              ),
+            const Text(
+              'You have pushed the button this many times:'),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
     );
-  } // build
-} // _MyHomePageState
+  }
+}
