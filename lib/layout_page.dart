@@ -1,36 +1,13 @@
-import 'package:demo/layout_page.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LayoutPage extends StatefulWidget {
+  const LayoutPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const MyHomePage(),
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.blue,
-          foregroundColor: Colors.white,
-        ),
-      ),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<LayoutPage> createState() => _LayoutPageState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _LayoutPageState extends State<LayoutPage> {
   Widget _bigDisplay() {
     return Row(
       children: <Widget>[
@@ -91,31 +68,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    debugPrint(width.toString());
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Responsive Layouts"),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 40, 8),
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const LayoutPage()));
-              },
-              child: const Text(
-                "Layout Builder ->",
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-        ],
+        title: const Text("Layout Page"),
       ),
       body: Center(
-        child: (width > 500) ? _bigDisplay() : _smallDisplay(),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 500) {
+              return _bigDisplay();
+            } else {
+              return _smallDisplay();
+            }
+          },
+        ),
       ),
     );
   }
