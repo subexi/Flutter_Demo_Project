@@ -29,17 +29,19 @@ class Home extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(ref.watch(normalProvider)),
-            ref.watch(messageProvider).when(
-              data: (message) {
-                return Text(message);
-            }, 
-              error: (error, StackTrace stack) {
-                return const Text("An error occurred");
+            Text(ref.read(normalProvider)),
+            Consumer(
+              builder: ((context, ref, child) {
+                return Text(ref.read(normalProvider));
+              }),
+            ),
+            ref.watch(messageProvider).when(data: (String value) {
+              return Text(value);
+            }, error: (err, stack) {
+              return Text(err.toString());
             }, loading: () {
               return const CircularProgressIndicator();
-            }
-            ),
+            }),
           ],
         ),
       ),
