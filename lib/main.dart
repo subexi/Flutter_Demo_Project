@@ -1,58 +1,49 @@
-import 'second.dart';
-import 'state.dart';
-import 'state_holder.dart';
+import 'providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const AppStateHolder(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
-      debugShowCheckedModeBanner: false,
+      home: Home(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Home extends ConsumerWidget {
+  const Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("InheritedWidget"),
-      ),
+      appBar: AppBar(title: const Text("Riverpod Simplified")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          children: [
+            Text(ref.read(normalProvider)),
+            Consumer(
+              builder: ((context, ref, child) {
+                return Text(ref.read(normalProvider));
+              }),
             ),
-            Text(
-              '${Provider.of(context).counter}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SecondPage()));
-              },
-              child: const Text("Second Page"),
-            ),
+            ref.watch(messageProvider).when(data: (String value) {
+              return Text(value);
+            }, error: (err, stack) {
+              return Text(err.toString());
+            }, loading: () {
+              return const CircularProgressIndicator();
+            }),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => AppStateHolder.of(context)?.add(),
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
