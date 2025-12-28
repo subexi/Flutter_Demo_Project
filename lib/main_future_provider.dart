@@ -23,36 +23,25 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int counter = ref.watch(counterController);
-    CounterNotifier controller = ref.watch(counterController.notifier);
-
     return Scaffold(
       appBar: AppBar(title: const Text("Riverpod Simplified")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 100,
-            ),
-            Text("Basic: $counter"),
-            const SizedBox(
-              height: 100,
-            ),
-            ElevatedButton(
-              child: const Text("Add"),
-              onPressed: () {
-                controller.add();
-              },
+            Text(ref.watch(normalProvider)),
+            ref.watch(messageProvider).when(
+              data: (message) {
+                return Text(message);
+            }, 
+              error: (error, StackTrace stack) {
+                return const Text("An error occurred");
+            }, loading: () {
+              return const CircularProgressIndicator();
+            }
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          controller.add();
-        },
       ),
     );
   }
